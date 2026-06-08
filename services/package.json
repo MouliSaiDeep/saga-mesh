@@ -1,0 +1,25 @@
+{
+  "name": "saga-services",
+  "version": "1.0.0",
+  "description": "Dependencies for SagaMesh Node.js microservices",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "kafkajs": "^2.2.4",
+    "pg": "^8.12.0",
+    "redis": "^4.6.14",
+    "ws": "^8.17.0",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.2",
+    "@types/pg": "^8.11.6",
+    "@types/ws": "^8.5.10",
+    "@types/uuid": "^9.0.8",
+    "typescript": "^5.4.5"
+  }
+}
