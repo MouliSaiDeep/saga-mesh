@@ -453,15 +453,58 @@ app.get('/', (req: Request, res: Response) => {
       }
     }
 
+    async function loadInitialSagas() {
+      try {
+        const res = await fetch('/api/sagas');
+        if (res.ok) {
+          const data = await res.json();
+          data.forEach(saga => {
+            sagas[saga.orderId] = saga;
+          });
+          renderSagas();
+        }
+      } catch (e) {
+        console.error("Failed to load initial sagas:", e);
+      }
+    }
+
     document.getElementById('btnFail').onclick = () => setFailureRate(1.0);
     document.getElementById('btnReset').onclick = () => setFailureRate(0.0);
 
     // Initial load
     connectWS();
+    loadInitialSagas();
   </script>
 </body>
 </html>
   `);
+});
+
+// GET /api/sagas - fetch all active sagas
+app.get('/api/sagas', async (req: Request, res: Response) => {
+  try {
+    const keys = await redisClient.keys('saga:*');
+    const list = [];
+    for (const key of keys) {
+      const data = await redisClient.hGetAll(key);
+      if (data && data.status) {
+        list.push({
+          orderId: key.replace('saga:', ''),
+          status: data.status,
+          history: JSON.parse(data.history || '[]'),
+        });
+      }
+    }
+    return res.status(200).json(list);
+  } catch (err: any) {
+    log({
+      level: 'error',
+      service: 'dashboard',
+      message: `Failed to fetch all sagas: ${err.message}`,
+      timestamp: new Date().toISOString(),
+    });
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // POST /api/simulate/failure (Req 9)
