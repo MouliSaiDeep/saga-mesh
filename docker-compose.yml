@@ -84,7 +84,7 @@ services:
     container_name: order-service
     command: ["node", "dist/order-service/index.js"]
     ports:
-      - "8081:3001"
+      - "3001:3001"
     environment:
       - PORT=3001
       - KAFKA_BROKERS=kafka:9092
@@ -199,7 +199,7 @@ services:
     container_name: dashboard
     command: ["node", "dist/dashboard/index.js"]
     ports:
-      - "8085:3005"
+      - "3005:3005"
     environment:
       - PORT=3005
       - REDIS_URL=redis://redis:6379
